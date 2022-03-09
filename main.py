@@ -193,6 +193,9 @@ class MainWindows(QMainWindow,Ui_MainWindow):
         myshow4=Xunlian()
         myshow4.show()
         myshow4.exec_()
+    def ceshi(self):
+        print("xxxx")
+
 
 class Fenge(QDialog,Ui_fenge):
 
