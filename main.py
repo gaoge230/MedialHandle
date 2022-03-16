@@ -692,6 +692,10 @@ class FenLei(QDialog,Ui_fenlei):
     def __init__(self):
         super(FenLei, self).__init__()
         self.setupUi(self)
+        self.label.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.label_3.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
+
         self.item = ["全部", "AlexNet", "VGG11", "VGG13", "VGG16", "VGG19",
                      "ResNet18", "ResNet34", "ResNet50", "ResNet101", "ResNet152",
                      "DenseNet"]
@@ -896,6 +900,8 @@ class QuZao(QDialog,Ui_quzao):
     def __init__(self):
         super(QuZao, self).__init__()
         self.setupUi(self)
+        self.label.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+
         listModel = QStringListModel()
         self.items = util().getModelList("./data/quzao")
         print(self.items)
@@ -908,7 +914,7 @@ class QuZao(QDialog,Ui_quzao):
         self.pushButton_4.clicked.connect(self.loadfile)
         self.pushButton_5.clicked.connect(self.inferenceFenLei)
         self.pushButton_6.clicked.connect(self.savefile)
-        self.resultPath = None
+        self.result = None
         self.loadImagePath = None
 
     def selectModel(self):
@@ -951,26 +957,27 @@ class QuZao(QDialog,Ui_quzao):
             return
         # 执行去噪
         file_name = view_result1(self.loadImagePath)
-        file_name = "./image/zaoresult.png"
-        print(file_name)
-        self.label_2.setPixmap(QtGui.QPixmap(file_name))
-        self.label_2.setScaledContents(True)
-        self.resultPath = file_name
-        self.loadImagePath = None
+        # file_name = "./image/zaoresult.png"
+        # print(file_name)
+        # self.label_2.setPixmap(QtGui.QPixmap(file_name))
+        # self.label_2.setScaledContents(True)
+        # self.resultPath = file_name
+        # self.loadImagePath = None
+        result = "ceshi "
+        self.textEdit.setText(result)
+        self.result = result
 
     def savefile(self):
         print("保存图片")
-        if (self.resultPath == None):
-            message = "没有分割结果需要保存！！！"
+        if (self.result == None):
+            message = "没有诊断报告结果需要保存！！！"
             print(message)
             box = QMessageBox(QMessageBox.Warning, '警告', message)
             box.exec_()
             return
-        image = Image.open(self.resultPath)
-        filename = QtWidgets.QFileDialog.getSaveFileName(None, "保存文件", ".", "Image Files(*.jpg *.png)", )
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, "保存文件", ".", "Image Files(*.doc *.docx)", )
         if (filename[0] == ''):
             return
-        image.save(filename[0])
 
 class ModelmanagementQuZao(QDialog, Ui_modelmanagement):
     def __init__(self):
