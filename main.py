@@ -71,6 +71,10 @@ class MainWindows(QMainWindow,Ui_MainWindow):
         self.label_7.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.label.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.label_2.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.label_4.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.label_5.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.label_8.setAttribute(QtCore.Qt.WA_TranslucentBackground)
+        self.label_2.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         self.label_3.setPixmap(QtGui.QPixmap(r"./image/1.webp"))
         self.label_3.setScaledContents(True)
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1118</width>
-    <height>902</height>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -62,7 +62,7 @@
     <property name="geometry">
      <rect>
       <x>4</x>
-      <y>210</y>
+      <y>180</y>
       <width>171</width>
       <height>51</height>
      </rect>
@@ -83,7 +83,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>274</y>
+      <y>250</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -102,7 +102,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>314</y>
+      <y>290</y>
       <width>111</width>
       <height>31</height>
      </rect>
@@ -119,15 +119,21 @@
    </widget>
    <widget class="QPushButton" name="pushButton_5">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>900</y>
-      <width>91</width>
+      <x>10</x>
+      <y>450</y>
+      <width>111</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>分类模型管理</string>
@@ -138,15 +144,21 @@
    </widget>
    <widget class="QPushButton" name="pushButton_6">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>860</y>
-      <width>91</width>
+      <x>10</x>
+      <y>410</y>
+      <width>111</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>超声切面分类</string>
@@ -161,8 +173,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>940</y>
+      <x>280</x>
+      <y>930</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -176,18 +188,24 @@
    </widget>
    <widget class="QPushButton" name="pushButton_8">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>1090</y>
-      <width>91</width>
+      <x>10</x>
+      <y>610</y>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>去噪模型管理</string>
+     <string>报告生成模型管理</string>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -195,18 +213,24 @@
    </widget>
    <widget class="QPushButton" name="pushButton_9">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>1050</y>
-      <width>91</width>
+      <x>10</x>
+      <y>570</y>
+      <width>141</width>
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="text">
-     <string>超声图像去噪</string>
+     <string>医学诊断报告生成</string>
     </property>
     <property name="default">
      <bool>false</bool>
@@ -218,8 +242,8 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>1130</y>
+      <x>380</x>
+      <y>930</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -351,15 +375,21 @@
    </widget>
    <widget class="QPushButton" name="pushButton_13">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>1220</y>
-      <width>91</width>
+      <x>10</x>
+      <y>730</y>
+      <width>111</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>异常检测</string>
@@ -385,7 +415,7 @@
     <property name="geometry">
      <rect>
       <x>-10</x>
-      <y>200</y>
+      <y>170</y>
       <width>181</width>
       <height>16</height>
      </rect>
@@ -422,15 +452,21 @@
    </widget>
    <widget class="QPushButton" name="pushButton_14">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>1260</y>
-      <width>91</width>
+      <x>10</x>
+      <y>770</y>
+      <width>111</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>检测模型管理</string>
@@ -442,8 +478,8 @@
    <widget class="QPushButton" name="pushButton_4">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>860</y>
+      <x>180</x>
+      <y>930</y>
       <width>91</width>
       <height>31</height>
      </rect>
@@ -461,11 +497,119 @@
       <height>891</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
     <property name="styleSheet">
      <string notr="true">background-color: rgb(206, 235, 255);</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="Line" name="line_5">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>340</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>350</y>
+      <width>171</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>超声图像分类</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_6">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>500</y>
+      <width>181</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>510</y>
+      <width>261</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>诊断报告生成</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>670</y>
+      <width>261</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>宋体</family>
+      <pointsize>18</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>胎儿异常检测</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line_7">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>660</y>
+      <width>180</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
     </property>
    </widget>
    <zorder>label_3</zorder>
@@ -491,6 +635,12 @@
    <zorder>line_8</zorder>
    <zorder>line_9</zorder>
    <zorder>pushButton_4</zorder>
+   <zorder>line_5</zorder>
+   <zorder>label_4</zorder>
+   <zorder>line_6</zorder>
+   <zorder>label_5</zorder>
+   <zorder>label_8</zorder>
+   <zorder>line_7</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -536,7 +686,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>超声切面分类</string>
     </property>
     <addaction name="action_11"/>
     <addaction name="action_12"/>
@@ -550,7 +700,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>诊断报告生成</string>
     </property>
     <addaction name="action_14"/>
     <addaction name="action_15"/>
@@ -564,7 +714,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>胎儿异常检测</string>
     </property>
     <addaction name="action_17"/>
     <addaction name="action_22"/>
@@ -577,7 +727,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>用户管理</string>
     </property>
     <addaction name="action_18"/>
     <addaction name="action_19"/>
@@ -590,7 +740,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>设置</string>
     </property>
     <addaction name="action_20"/>
    </widget>
@@ -616,7 +766,7 @@
      </font>
     </property>
     <property name="title">
-     <string/>
+     <string>主页</string>
     </property>
     <addaction name="action_21"/>
    </widget>
@@ -769,7 +919,7 @@
   </action>
   <action name="action_14">
    <property name="text">
-    <string>超声图像去噪</string>
+    <string>医学诊断报告生成</string>
    </property>
    <property name="font">
     <font>
@@ -780,7 +930,7 @@
   </action>
   <action name="action_15">
    <property name="text">
-    <string>去噪模型管理</string>
+    <string>报告生成模型管理</string>
    </property>
    <property name="font">
     <font>
