@@ -23,6 +23,7 @@ from selectmodel import Ui_SelectModel
 from trainModel import Ui_trainModel
 from trainModelFenLei import Ui_trainModelfenlei
 from trainModelQuZao import Ui_trainModelQuZao
+from yunzhouyuce import Ui_yunzhouyuce
 from utils import util
 from xunlian import Ui_xunlian
 from fenge import Ui_fenge
@@ -39,6 +40,17 @@ import threading
 import _thread
 import subprocess
 import shutil
+
+import torch.nn as nn
+import torch.utils
+import torch.backends.cudnn as cudnn
+from torch.autograd import Variable
+from torchvision import datasets, models, transforms
+from PIL import Image
+
+from zishiying_fanliu import getADresult
+from gwpredict_true import getYZresult
+
 
 class MainWindows(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -97,7 +109,8 @@ class MainWindows(QMainWindow,Ui_MainWindow):
         self.stackedWidget.addWidget(AnomalyDetection())
         self.stackedWidget.addWidget(DataArgument())
         self.stackedWidget.addWidget(ImageSize())
-        self.stackedWidget.addWidget(ModelmanagementDetection()) # 13
+        #self.stackedWidget.addWidget(ModelmanagementDetection()) # 13
+        self.stackedWidget.addWidget(YunZhouYuCe()) # 13
         self.stackedWidget.addWidget(Normalize()) # 14
 
         self.setAutoFillBackground(True)
@@ -171,7 +184,6 @@ class MainWindows(QMainWindow,Ui_MainWindow):
         self.stackedWidget.setCurrentIndex(index)
         #self.stackedWidget.currentWidget().showEvent()
 
-
     def msg(self):
         ok = QMessageBox.about(self,
                                ("制作人信息"), ("高歌，重庆邮电大学图像认知与模式识别实验室。版本v1.0")
@@ -197,8 +209,6 @@ class MainWindows(QMainWindow,Ui_MainWindow):
         myshow4=Xunlian()
         myshow4.show()
         myshow4.exec_()
-
-
 
 class Fenge(QDialog,Ui_fenge):
 
@@ -736,6 +746,21 @@ class FenLei(QDialog,Ui_fenlei):
         self.loadImagePath = file_name
 
     def inferenceFenLei(self):
+        global plan_map
+        plan_map = {
+            "腹部横切面": "腹部横切面包括UV脐静脉、PV门静脉、ST胃、DAO降主动脉、IVC下腔静脉、SP脊柱。正常胎儿腹部横切面显示胃泡位于左侧富强，脐静脉与门静脉相连，门静脉窦转向胎儿右侧，降主动脉横切面位于脊柱左前方，与脊柱紧靠；下腔静脉横切面位于脊柱右前方，相对远离脊柱",
+            "四腔心": "心脏2/3位于左侧胸腔内,心尖指向左前方,心轴角度45° +20°心脏面积约为胸腔面积的20%~35%，心率110~160次/分,心律齐,无明显心包积液;心腔观察:左、右心房大小相近房间隔上见卵圆孔，瓣膜开向左心房，至少可见左右各一条肺静脉汇人左心房;左、右心室大小相近，无心室壁增厚，左心室形态相对长而窄,内壁较光整，乳头肌附着于左室游离壁；右心室形态相对短而宽，内壁粗糙，并可见回声稍强的调节束，一端附着于右心室心尖部，另一端附着 于室间隔中下1/3,心腔间隔及房、室连接观察:心内膜垫位于心脏中央，呈“十”字交叉，三尖瓣在室间隔上的附着点与二尖瓣比较更接近心尖部，二尖瓣及三尖瓣开闭活动自如，室间隔无明显连续性中断。彩色多普勒血流显像:二尖瓣和三尖瓣血流方向由心房至心室，两者平行，宽度及色彩亮度基本相等。",
+            "左室流出道": "升主动脉发自左心室的内上方，发出后即向胎儿右肩行走，室间隔与主动脉前壁连续性好，主动脉后壁与二尖瓣前叶呈纤维连续，主动脉后开闭活动自如，升主动脉内径无明显异常，彩色多普勒血流显像可见血液从左心室流向升主动脉",
+            "右室流出道": "肺动脉发自右心室的内上方，发出后跨过升主动脉前方，立即向胎儿左肩行走，与升主动脉形成交叉,肺动脉瓣开闭活动自如，与升主动脉相比，主肺动脉管径通常略宽，彩色多普勒血流显像可见血液从右心室流向肺动脉",
+            "三血管气管": "三血管气管切面从左到右包含的三条血管是:主肺动脉-动脉导管、主动脉弓和上腔静脉。动脉导管和主动脉弓形成'V'形共同汇人降主动脉;而最右侧的上腔静脉则显示的是横切面。这三条血管的管径从左到右呈逐步递减，在上腔静脉的后方、主动脉弓的右侧，可见气管的横切面。彩色多普勒血流显像可见主动脉弓及动脉导管的血流均流向降主动脉",
+            "三血管": "正常胎儿此切面显示主肺动脉、升主动脉、上腔静脉，升主动脉和上腔静脉为短轴切面，这3条血管斜行排列呈直线，从左向右、从前向后依次是主肺动脉、升主动脉、上腔静脉;主肺动脉内径>升主动脉内径>上腔静脉内径。主肺动脉发出左、右肺动脉分支,呈“八”字形。降主动脉位于脊柱左前方",
+            "主动脉弓长轴": "正常主动脉弓起源于升主动脉，呈锐角环形弯曲、形似“拐杖”状，从右向左分别发出:无名动脉、左颈总动脉、左锁骨下动脉。左、右心房间可见卵圆孔及卵圆瓣。彩色多普勒血流显像可见血流自升主动脉、主动脉弓流向降主动脉，还可以显示三支头臂动脉分支",
+            "动脉导管弓长轴": "正常动脉导管弓位于主动脉弓下方，起源于肺动脉，呈较宽的大角度弯曲，几乎垂直于降主动脉，形似“曲根球杆”状。胎儿期，动脉导管内径与降主动脉相近",
+            "腔静脉长轴": "腔静脉长轴切面显示上腔静脉、下腔静脉、右心房、右心室、三尖瓣前瓣及后瓣，上腔静脉、下腔静脉与右心房相连，下腔静脉略宽于上腔静脉，靠近下腔静脉的为三尖瓣后瓣靠近上腔静脉的为三尖瓣前瓣",
+            "心底大动脉短轴": "心底大动脉短轴切面显示右室流出道及主肺动脉包绕主动脉根部肺动脉与三尖瓣之间为肌性流出道,肺动脉在主动脉左前方,其起始部与主动脉星“十字交叉”状,肺动脉为长轴,与降主动脉之间为动脉导管。受分辨力影响,主动脉瓣数目往往显示不清",
+            "双心室短轴": "正常双心室短轴切面靠近胸壁一侧为右心室,另一侧为左心室，两心室间为肌部室间隔，心腔内可见二尖瓣、三尖瓣、乳头肌及腱索，三尖瓣腱索附着于室间隔"
+            }
+
         print("执行分类推理！")
         # 判断条件
         if (self.loadImagePath is None):
@@ -751,10 +776,103 @@ class FenLei(QDialog,Ui_fenlei):
             return
 
         # 执行分类
-        self.textEdit.setText("该超声图像为腹部横切面。\n"
-                              "腹部横切面包括UV脐静脉、PV门静脉、ST胃、DAO降主动脉、IVC下腔静脉、SP脊柱。正常胎儿腹部横切面显示胃泡"
-                              "位于左侧富强，脐静脉与门静脉相连，门静脉窦转向胎儿右侧，降主动脉横切面位于脊柱左前方，与脊柱紧靠；下腔"
-                              "静脉横切面位于脊柱右前方，相对远离脊柱。")
+        lable = self.inference(text)
+
+        # 分类结果
+        self.textEdit.setText(lable)
+        # 切面描述
+        self.textEdit_2.setText(plan_map[lable])
+
+    def inference(self, model):
+        US_CLASSES = 11
+        US_MEAN = [0.243756, 0.256587, 0.282307]
+        US_STD = [0.185635, 0.199266, 0.209196]
+        transform = transforms.Compose([
+            transforms.Resize(224),
+            transforms.ToTensor(),
+            transforms.Normalize(US_MEAN, US_STD),
+        ])
+        classes = ("腹部横切面", "左室流出道", "右室流出道", "四腔心", "三血管", "三血管气管", "双心室短轴", "心底大动脉短轴", "主动脉弓长轴", "动脉导管弓长轴", "腔静脉长轴")
+        im = Image.open(self.loadImagePath)
+        im = transform(im)  # [C, H, W]
+        im = torch.unsqueeze(im, dim=0)  # [N, C, H, W]
+
+        if model == "vgg13_bn.pt":
+            net = models.vgg13_bn(pretrained=False)
+            num_ftrs = net.classifier[6].in_features
+            net.classifier[6] = nn.Linear(num_ftrs, US_CLASSES)
+            net.load_state_dict(torch.load('./data/fenlei/' + str(model), map_location='cpu'))
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+
+        elif model == "resnet18.pt":
+            net = models.resnet18(pretrained=False)
+            num_ftrs = net.fc.in_features
+            net.fc = nn.Linear(num_ftrs, US_CLASSES)
+            net.load_state_dict(torch.load('./data/fenlei/' + str(model), map_location='cpu'))
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+
+        elif model == "densenet121.pt":
+            net = models.densenet121(pretrained=False)
+            num_ftrs = net.classifier.in_features
+            net.classifier = nn.Linear(num_ftrs, US_CLASSES)
+            net.load_state_dict(torch.load('./data/fenlei/' + str(model), map_location='cpu'))
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+        elif model == "eff_b7.pt":
+            net = model = EfficientNet.from_name('efficientnet-b7')
+            num_ftrs = net.classifier.in_features
+            net.classifier = nn.Linear(num_ftrs, US_CLASSES)
+            net.load_state_dict(torch.load('./data/model/' + str(model), map_location='cpu'))
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+        elif model == "RLDS.pt":
+            net = RLD(BasicBlock)
+            net.load_state_dict(torch.load('./data/fenlei/' + str(model), map_location='cpu'))
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+        elif model == "UIAC.pt" or model == "att-UIAC.pt":
+            from collections import namedtuple
+            Genotype = namedtuple('Genotype', 'normal normal_concat reduce reduce_concat')
+            us_25 = Genotype(normal=[('skip_connect', 0), ('dil_conv_5x5', 1), ('dil_conv_3x3', 0), ('sep_conv_3x3', 1),
+                                     ('dil_conv_5x5', 0), ('sep_conv_5x5', 1), ('dil_conv_5x5', 0),
+                                     ('dil_conv_5x5', 2)], normal_concat=range(2, 6),
+                             reduce=[('skip_connect', 0), ('max_pool_3x3', 1), ('max_pool_3x3', 1), ('skip_connect', 2),
+                                     ('dil_conv_5x5', 3), ('max_pool_3x3', 1), ('max_pool_3x3', 1),
+                                     ('sep_conv_5x5', 4)], reduce_concat=range(2, 6))
+            net = Network(16, US_CLASSES, 52, False, us_25, 0.2)
+            new_state_dict = {}
+            state_dict = torch.load('./date/fenlei/' + str(model))
+            for k, v in state_dict.items():
+                if "auxiliary" in k:
+                    continue
+                new_state_dict[k] = v
+            net.load_state_dict(new_state_dict)
+            with torch.no_grad():
+                outputs = net(im)
+                predict = torch.max(outputs, dim=1)[1].data.numpy()
+            pre_lable = classes[int(predict)]
+            return pre_lable
+        else:
+            box = QMessageBox(QMessageBox.Warning, '警告', "请选择具体的推理模型！！！")
+            box.exec_()
+            return
 
 class ModelmanagementFenLei(QDialog, Ui_modelmanagement):
     def __init__(self):
@@ -1143,109 +1261,37 @@ class AnomalyDetection(QDialog,Ui_anomalydetection):
     def __init__(self):
         super(AnomalyDetection, self).__init__()
         self.setupUi(self)
-        self.items = ["心脏病检测","反流检测"]
-        self.comboBox.addItems(self.items)
-        self.comboBox_2.addItems(self.items)
-        self.pushButton_2.clicked.connect(self.selectModel1)
-        self.pushButton_4.clicked.connect(self.valueExecute)
         self.pushButton.clicked.connect(self.selectFile)
         self.loadPath = None
-        self.pushButton_3.clicked.connect(self.selectModel2)
-        self.pushButton_5.clicked.connect(self.batchExecute)
+        self.pushButton_5.clicked.connect(self.valueExecute)
+        self.pushButton_2.clicked.connect(self.savefile)
+        self.label.setPixmap(QtGui.QPixmap(r"./image/background2.jpg"))
+        self.label.setScaledContents(True)
 
     def selectModel1(self):
         print("selectModel")
         self.lineEdit_17.setText("自编码器2")
 
     def valueExecute(self):
-        ## 获取值
-        LA = self.lineEdit.text()   #LA
-        LV = self.lineEdit_2.text() #LV
-        RA = self.lineEdit_3.text() #RA
-        RV = self.lineEdit_4.text() #RV
-        AO = self.lineEdit_5.text() #AO
-        PA = self.lineEdit_6.text() #PA
-        AR = self.lineEdit_7.text() #AR
-        MV_E = self.lineEdit_14.text() #MV-E
-        MV_A = self.lineEdit_11.text() #MV-A
-        TV_E = self.lineEdit_12.text() #TV-E
-        TV_A = self.lineEdit_9.text() #TV-A
-        P_AO = self.lineEdit_8.text() #P-AO
-        P_PA = self.lineEdit_13.text() #P-PA
-        P_AR = self.lineEdit_10.text() #P-AR
-        yunZhou = self.lineEdit_15.text() #孕周
-
-        index = self.comboBox.currentIndex()
-        detectType = self.items[index]
-        model = self.lineEdit_17.text() # model
-
-        #判断
-        if(LA == None or LA == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "LA(左心房)不能为空！！！")
-            box.exec_()
-            return
-        if (LV == None or LV == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "LV(左心室)不能为空！！！")
-            box.exec_()
-            return
-        if (RA == None or RA == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "RA(右心房)不能为空！！！")
-            box.exec_()
-            return
-        if (RV == None or RV == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "RV(右心室)不能为空！！！")
-            box.exec_()
-            return
-        if (AO == None or AO == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "AO(主动脉)不能为空！！！")
-            box.exec_()
-            return
-        if (PA == None or PA == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "PA(肺动脉)不能为空！！！")
-            box.exec_()
-            return
-        if (AR == None or AR == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "AR(峡部)不能为空！！！")
-            box.exec_()
-            return
-        if (MV_E == None or MV_E == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "MV-E(二尖瓣E峰)不能为空！！！")
-            box.exec_()
-            return
-        if (MV_A == None or MV_A == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "MV_A(二尖瓣A峰)不能为空！！！")
-            box.exec_()
-            return
-        if (TV_E == None or TV_E == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "TV-E(三尖瓣E峰)不能为空！！！")
-            box.exec_()
-            return
-        if (TV_A == None or TV_A == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "TV-A(三尖瓣A峰)不能为空！！！")
-            box.exec_()
-            return
-        if (P_AO == None or P_AO == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "P-AO(主动脉流速)不能为空！！！")
-            box.exec_()
-            return
-        if (P_PA == None or P_PA == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "P-PA(肺动脉流速)不能为空！！！")
-            box.exec_()
-            return
-        if (P_AR == None or P_AR == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "P-AR(峡部流速)不能为空！！！")
-            box.exec_()
-            return
-        if (yunZhou == None or yunZhou == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "孕周不能为空！！！")
-            box.exec_()
-            return
-        if (model == None or model == ""):
-            box = QMessageBox(QMessageBox.Warning, '警告', "模型不能为空！！！")
-            box.exec_()
-            return
+        # 获取值
+        dir_ad = self.lineEdit_16.text()
+        print(dir_ad)
+        # file_name = view_result1(self.loadImagePath)
         print("执行检测")
-        self.textEdit.setText("结果显示，检测样本不存在心脏病。")
+        res = getADresult(self.loadPath)
+        print(res)
+        # res = str(res)
+        name = "诊断医师：" + str(self.lineEdit_19.text())
+        self.textEdit_2.setText(name)
+        for i, j in enumerate(res):
+            print(j, type(j))
+            # temp = ""
+            if j == 0:
+                temp1 = "第" + str(i + 1) + "位胎儿的检测结果为：正常"
+                self.textEdit_2.append(temp1)  # 追加字符串
+            else:
+                temp2 = "第" + str(i + 1) + "位胎儿的检测结果为：异常"
+                self.textEdit_2.append(temp2)
 
     def selectFile(self):
         file_name, filtertype = QtWidgets.QFileDialog.getOpenFileName(self,
@@ -1254,6 +1300,16 @@ class AnomalyDetection(QDialog,Ui_anomalydetection):
                                                                       "csv(*.csv)")
         self.lineEdit_16.setText(os.path.basename(file_name))
         self.loadPath = file_name
+
+    def savefile(self):
+        print("保存图片")
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, "保存文件", ".", "txt(*.txt)", )
+        print(filename)
+        print(filename[0])
+        self.lineEdit_17.setText(filename[0])
+        with open(filename[0], 'w') as f:
+            my_text = self.textEdit_2.toPlainText()
+            f.write(my_text)
 
     def selectModel2(self):
         print("selectModel")
@@ -1295,6 +1351,50 @@ class AnomalyDetection(QDialog,Ui_anomalydetection):
                                 "15,1\n"
                                 "16,0\n"
                                 )
+
+class YunZhouYuCe(QDialog,Ui_yunzhouyuce):
+    def __init__(self):
+        super(YunZhouYuCe, self).__init__()
+        self.setupUi(self)
+        self.pushButton.clicked.connect(self.selectFile)
+        self.loadPath = None
+        self.resultPath = None
+        self.label.setPixmap(QtGui.QPixmap(r"./image/background2.jpg"))
+        self.label.setScaledContents(True)
+        self.pushButton_5.clicked.connect(self.valueExecute)
+        self.pushButton_2.clicked.connect(self.savefile)
+
+    def valueExecute(self):
+       dir_ad = self.lineEdit_16.text()
+       print(dir_ad)
+       print("执行预测")
+       res = getYZresult(self.loadPath)
+       print(res)
+       name = "诊断医师："+str(self.lineEdit_19.text())
+       self.textEdit_2.setText(name)
+       for i,j in enumerate(res):
+           temp = "第"+str(i+1)+"位孕妇的孕周为："+str(j)
+           self.textEdit_2.append(temp)      # 追加字符串
+
+
+    def selectFile(self):
+        file_name, filtertype = QtWidgets.QFileDialog.getOpenFileName(self,
+                                                                      '打开文件',
+                                                                      r"C:\Users\Y430P\Desktop/",
+                                                                      "csv(*.csv)")
+        self.lineEdit_16.setText(os.path.basename(file_name))
+        self.loadPath = file_name
+
+
+    def savefile(self):
+        print("保存图片")
+        filename = QtWidgets.QFileDialog.getSaveFileName(None, "保存文件", ".", "txt(*.txt)", )
+        print(filename)
+        print(filename[0])
+        self.lineEdit_17.setText(filename[0])
+        with open(filename[0],'w') as f:
+            my_text=self.textEdit_2.toPlainText()
+            f.write(my_text)
 
 class ModelmanagementDetection(QDialog, Ui_modelmanagement):
     def __init__(self):

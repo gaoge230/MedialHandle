@@ -209,8 +209,8 @@
    </property>
    <property name="font">
     <font>
-     <family>宋体</family>
-     <pointsize>12</pointsize>
+     <family>Calibri</family>
+     <pointsize>16</pointsize>
     </font>
    </property>
   </widget>
@@ -225,8 +225,8 @@
    </property>
    <property name="font">
     <font>
-     <family>宋体</family>
-     <pointsize>12</pointsize>
+     <family>Calibri</family>
+     <pointsize>16</pointsize>
     </font>
    </property>
   </widget>
