@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>胎儿心脏分割原型系统</string>
+   <string>胎儿超声图像多功能处理系统V1.0</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -265,27 +265,6 @@
      </rect>
     </property>
     <widget class="QWidget" name="stackedWidgetPage1">
-     <widget class="QLabel" name="label_6">
-      <property name="geometry">
-       <rect>
-        <x>190</x>
-        <y>120</y>
-        <width>841</width>
-        <height>141</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>宋体</family>
-        <pointsize>36</pointsize>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>胎儿心脏分割原型系统V1.0</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_7">
       <property name="geometry">
        <rect>
@@ -322,9 +301,29 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <widget class="QLabel" name="label_6">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>140</y>
+         <width>841</width>
+         <height>141</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>宋体</family>
+         <pointsize>36</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>胎儿超声图像多功能处理系统V1.0</string>
+       </property>
+      </widget>
      </widget>
      <zorder>frame</zorder>
-     <zorder>label_6</zorder>
      <zorder>label_7</zorder>
     </widget>
    </widget>
@@ -469,7 +468,7 @@
      </font>
     </property>
     <property name="text">
-     <string>检测模型管理</string>
+     <string>孕周预测</string>
     </property>
     <property name="default">
      <bool>false</bool>

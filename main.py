@@ -50,7 +50,9 @@ from PIL import Image
 
 from zishiying_fanliu import getADresult
 from gwpredict_true import getYZresult
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
+from test_X import *
 
 class MainWindows(QMainWindow,Ui_MainWindow):
     def __init__(self):
@@ -1021,7 +1023,7 @@ class QuZao(QDialog,Ui_quzao):
         self.label.setAttribute(QtCore.Qt.WA_TranslucentBackground)
 
         listModel = QStringListModel()
-        self.items = util().getModelList("./data/quzao")
+        self.items = util().getModelList("./data/generatereport")
         print(self.items)
         listModel.setStringList(self.items)
         self.listView.setModel(listModel)
@@ -1034,6 +1036,9 @@ class QuZao(QDialog,Ui_quzao):
         self.pushButton_6.clicked.connect(self.savefile)
         self.result = None
         self.loadImagePath = None
+        self.report =None
+        self.imageName = None
+        self.model = None
 
     def selectModel(self):
         print("选择去噪模型！")
@@ -1045,6 +1050,7 @@ class QuZao(QDialog,Ui_quzao):
             box.exec_()
             return
         self.lineEdit.setText(self.items[row])
+        self.model = self.items[row]
 
     def loadfile(self):
         print("上传文件！")
@@ -1060,7 +1066,7 @@ class QuZao(QDialog,Ui_quzao):
         self.loadImagePath = file_name
 
     def inferenceFenLei(self):
-        print("执行去噪推理！")
+        print("执行诊断报告生成推理！")
         # 判断条件
         if (self.loadImagePath is None):
             message = "请上传的超声图像！！！"
@@ -1074,16 +1080,23 @@ class QuZao(QDialog,Ui_quzao):
             box.exec_()
             return
         # 执行去噪
-        file_name = view_result1(self.loadImagePath)
+        #file_name = view_result1(self.loadImagePath)
         # file_name = "./image/zaoresult.png"
         # print(file_name)
         # self.label_2.setPixmap(QtGui.QPixmap(file_name))
         # self.label_2.setScaledContents(True)
         # self.resultPath = file_name
         # self.loadImagePath = None
-        result = "ceshi "
-        self.textEdit.setText(result)
-        self.result = result
+
+        # result = "ceshi "
+        # self.textEdit.setText(result)
+        # self.result = result
+
+        print("马上执行推理")
+        report, self.imageName = evaluate(self.loadImagePath, 2, self.model)
+        # 执行诊断报告生成  在这里 把我推理的文本传进去
+        self.textEdit.setText(report)
+        self.report = report
 
     def savefile(self):
         print("保存图片")
@@ -1102,7 +1115,7 @@ class ModelmanagementQuZao(QDialog, Ui_modelmanagement):
         super(ModelmanagementQuZao, self).__init__()
         self.setupUi(self)
         listModel = QStringListModel()
-        self.items = util().getModelList("./data/quzao")
+        self.items = util().getModelList("./data/generatereport")
         print(self.items)
         listModel.setStringList(self.items)
         self.listView.setModel(listModel)
